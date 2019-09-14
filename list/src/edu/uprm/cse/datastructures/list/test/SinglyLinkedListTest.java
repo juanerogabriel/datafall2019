@@ -1,21 +1,22 @@
 package edu.uprm.cse.datastructures.list.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import edu.uprm.cse.datastructures.list.ArrayList;
 import edu.uprm.cse.datastructures.list.List;
-import junit.framework.Assert;
+import edu.uprm.cse.datastructures.list.SinglyLinkedList;
 
-public class ArrayListTest {
+public class SinglyLinkedListTest {
 
 	private List<String> L;
 	
 	@Before
 	public void setUp() throws Exception {
-		this.L = new ArrayList<String>();
+		this.L = new SinglyLinkedList<String>();
 		this.L.add("Kim");
 		this.L.add("Ned");
 		this.L.add("Ron");

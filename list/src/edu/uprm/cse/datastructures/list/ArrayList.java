@@ -1,7 +1,40 @@
 package edu.uprm.cse.datastructures.list;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 public class ArrayList<E> implements List<E> {
-	
+	@SuppressWarnings("hiding")
+	private class ArrayListIterator<E> implements Iterator<E> {
+		
+		private int currentPosition;
+		
+		
+
+		public ArrayListIterator() {
+			super();
+			this.currentPosition = 0;
+			
+		}
+
+		@Override
+		public boolean hasNext() {
+			return this.currentPosition < currentSize;
+		}
+
+		@Override
+		public E next() {
+			if (this.hasNext()) {
+				E result = (E) elements[this.currentPosition++]; // elements is array in enclosing class
+				return result;
+			}
+			else {
+				throw new NoSuchElementException();
+			}
+		}
+		
+	}
+ 	
 	private E[] elements;
 	private int currentSize;
 	private static final int DEFAULT_SIZE = 10;
@@ -29,11 +62,11 @@ public class ArrayList<E> implements List<E> {
 
 	@Override
 	public boolean isMember(E e) {
-		return this.indexOf(e) > 0;
+		return this.firstIndexOf(e) >= 0;
 	}
 
 	@Override
-	public int indexOf(E e) {
+	public int firstIndexOf(E e) {
 		for (int i=0; i < this.size(); ++i) {
 			if (this.elements[i].equals(e)) {
 				return i;
@@ -70,8 +103,8 @@ public class ArrayList<E> implements List<E> {
 			if (this.size() == this.elements.length) {
 				this.reAllocate();
 			}
-			for (int i=this.currentSize-1; i >= position; --i) {
-				this.elements[i+1] = this.elements[i];
+			for (int i=this.currentSize; i > position; --i) {
+				this.elements[i] = this.elements[i-1];
 			}
 			this.elements[position] = e;
 			this.currentSize++;
@@ -114,14 +147,55 @@ public class ArrayList<E> implements List<E> {
 
 	@Override
 	public void clear() {
-		while(this.remove(0) != null);
+		while(!this.isEmpty()) {
+			this.remove(0);
+		}
 	}
 
 	@Override
-	public E[] toArray() {
-		E[] result = (E[]) new Object[this.size()];
-		for (int i=0; i < this.size(); ++i) {
-			result[i] = this.elements[i];
+	public Object[] toArray() {
+		Object[] result = (E[]) new Object[this.size()];
+		System.arraycopy(this.elements, 0, result, 0, this.size());
+//		for (int i=0; i < this.size(); ++i) {
+//			result[i] = this.elements[i];
+//		}
+		return result;
+	}
+
+	@Override
+	public Iterator<E> iterator() {
+		return new ArrayListIterator<E>();
+	}
+
+	@Override
+	public int lastIndexOf(E e) {
+		for (int i=this.currentSize-1; i>= 0; --i) {
+			if (this.elements[i].equals(e)) {
+				return i;
+			}
+		}
+		// not found
+		return -1;
+	}
+
+	@Override
+	public boolean remove(E e) {
+		int target = this.firstIndexOf(e);
+		if (target < 0) {
+			return false;
+		}
+		else {
+			this.remove(target);
+			return true;
+		}
+	}
+
+	@Override
+	public int removeAll(E e) {
+		int result=0;
+		
+		while(this.remove(e)) {
+			result++;
 		}
 		return result;
 	}
